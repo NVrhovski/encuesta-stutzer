@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>¿Vale la pena contratarme?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #D7F7A6;
+    --bg-deep: #C3EE86;
+    --card: #FBFFE9;
+    --ink: #16210A;
+    --ink-soft: #3B4A2A;
+    --teal: #2FBFA0;
+    --teal-dark: #1C8570;
+    --line: rgba(22,33,10,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'IBM Plex Sans', sans-serif;
+    background:#EDEDE3;
+    display:flex;
+    justify-content:center;
+    padding:40px 16px;
+    color:var(--ink);
+  }
+  .phone{
+    width:390px;
+    max-width:100%;
+    min-height:760px;
+    background:var(--bg);
+    border-radius:28px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 30px 60px rgba(0,0,0,0.18);
+    display:flex;
+    flex-direction:column;
+  }
+  .storybar{
+    display:flex;
+    gap:5px;
+    padding:16px 16px 0;
+  }
+  .seg{
+    flex:1;
+    height:3px;
+    border-radius:3px;
+    background:rgba(22,33,10,0.18);
+    overflow:hidden;
+  }
+  .seg i{
+    display:block;
+    height:100%;
+    width:0%;
+    background:var(--ink);
+    transition:width .25s ease;
+  }
+  .seg.done i{width:100%;}
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 16px 4px;
+    font-size:12px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .brand .dot{
+    width:20px;height:20px;border-radius:50%;
+    background:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--bg);
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size:12px;
+  }
+  .brand span.label{
+    max-width:230px;
+  }
+  .stage{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    padding:28px 24px 100px;
+    position:relative;
+  }
+  .slide{
+    display:none;
+    flex-direction:column;
+    animation:fade .35s ease;
+    flex:1;
+  }
+  .slide.active{display:flex;}
+  @keyframes fade{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .eyebrow{
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    margin:0 0 14px;
+  }
+  h1{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size:29px;
+    line-height:1.15;
+    letter-spacing:0.005em;
+    text-transform:uppercase;
+    margin:0 0 16px;
+  }
+  .slide.intro h1{font-size:25px;}
+  p.lead{
+    font-size:15px;
+    line-height:1.6;
+    color:var(--ink-soft);
+    margin:0 0 24px;
+  }
+  .qtext{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size:20px;
+    line-height:1.28;
+    margin:0 0 22px;
+  }
+  .opt{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:13px 14px;
+    margin-bottom:10px;
+    cursor:pointer;
+    text-align:left;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14.5px;
+    line-height:1.45;
+    color:var(--ink);
+    transition:border-color .15s ease, background .15s ease, transform .1s ease;
+  }
+  .opt:hover{border-color:var(--ink);}
+  .opt:active{transform:scale(0.99);}
+  .opt .badge{
+    flex:none;
+    width:24px;height:24px;
+    border-radius:50%;
+    background:var(--bg-deep);
+    color:var(--ink);
+    font-weight:600;
+    font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+    margin-top:1px;
+  }
+  .opt.selected{
+    border-color:var(--ink);
+    background:var(--bg-deep);
+  }
+  .opt.selected .badge{
+    background:var(--ink);
+    color:var(--bg);
+  }
+  .opt[disabled]{cursor:default;}
+  .verdict{
+    display:none;
+    margin-top:2px;
+    padding:12px 14px;
+    background:#0F1B08;
+    color:#DFF9C9;
+    border-radius:12px;
+    font-size:13px;
+    line-height:1.5;
+  }
+  .verdict.show{display:block; animation:fade .3s ease;}
+  .verdict b{color:#fff;}
+  .spacer{flex:1;}
+  .btnrow{
+    position:absolute;
+    left:24px; right:24px; bottom:26px;
+  }
+  button.cta{
+    width:100%;
+    background:var(--ink);
+    color:var(--bg);
+    border:none;
+    border-radius:14px;
+    padding:15px 18px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    cursor:pointer;
+    transition:opacity .15s ease, transform .1s ease;
+  }
+  button.cta:active{transform:scale(0.98);}
+  button.cta[disabled]{opacity:.35; cursor:not-allowed;}
+  .timehint{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:10px;
+  }
+  .result-card{
+    background:var(--card);
+    border-radius:16px;
+    padding:20px;
+    border:1.5px solid var(--line);
+  }
+  .pct{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size:42px;
+    color:var(--teal-dark);
+    line-height:1;
+    margin:0 0 8px;
+  }
+  .result-title{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size:16px;
+    text-transform:uppercase;
+    margin:0 0 10px;
+  }
+  .result-body{
+    font-size:14px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    margin:0 0 18px;
+  }
+  .contact{
+    border-top:1px solid var(--line);
+    padding-top:14px;
+    font-size:13.5px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .contact strong{font-family:'Anton', sans-serif; font-size:16px; font-weight:400;}
+  .contact span{color:var(--ink-soft);}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="storybar" id="storybar"></div>
+  <div class="topbar">
+    <div class="brand"><span class="dot">V</span> <span class="label">¿vale la pena contratarme?</span></div>
+    <span id="stepcount">0/6</span>
+  </div>
+
+  <div class="stage">
+
+    <div class="slide intro active" data-index="0">
+      <div class="eyebrow">Aplicación · Social Media</div>
+      <h1>¿Vale la pena contratarme?</h1>
+      <p class="lead">Sabían que esa persona existía, solo faltaba encontrarla. Bueno, acá estoy. Antes de mandarles un CV que nadie va a leer entero, les dejo este test para que vean con sus propios ojos por qué soy yo la que tienen que contratar. ¿Están listas?</p>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="slide" data-index="1">
+      <div class="eyebrow">Pregunta 1 de 5</div>
+      <p class="qtext">Estás armando el contenido de la semana y el cliente te tira la idea más random del mundo a último momento. ¿Qué hacés?</p>
+      <button class="opt" data-q="1">
+        <span class="badge">A</span>
+        <span>La subo tal cual me la tiró, sin pensarlo mucho.</span>
+      </button>
+      <button class="opt" data-win="1" data-q="1">
+        <span class="badge">B</span>
+        <span>La adapto, le doy forma, le encuentro el gancho y, en un rato, el cliente tiene algo mejor de lo que pidió.</span>
+      </button>
+      <button class="opt" data-q="1">
+        <span class="badge">C</span>
+        <span>Le digo que ya no llegamos y que la subimos la semana que viene.</span>
+      </button>
+      <div class="verdict" id="verdict-1"><b>Por qué importa:</b> porque el caos también se trabaja.</div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="slide" data-index="2">
+      <div class="eyebrow">Pregunta 2 de 5</div>
+      <p class="qtext">Vas caminando y ves que un trend explotó hace 20 minutos. ¿Cuánto tardás en reaccionar?</p>
+      <button class="opt" data-win="1" data-q="2">
+        <span class="badge">A</span>
+        <span>Lo grabo ahí mismo, con lo que tengo a mano, antes de que se enfríe. Después se edita; primero, se graba.</span>
+      </button>
+      <button class="opt" data-q="2">
+        <span class="badge">B</span>
+        <span>Lo guardo para la próxima reunión de contenido.</span>
+      </button>
+      <button class="opt" data-q="2">
+        <span class="badge">C</span>
+        <span>Nada, total para cuando lo haga ya se pasó el momento.</span>
+      </button>
+      <div class="verdict" id="verdict-2"><b>Por qué importa:</b> porque en redes el que llega tarde, llega mudo.</div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="slide" data-index="3">
+      <div class="eyebrow">Pregunta 3 de 5</div>
+      <p class="qtext">Te dicen "hacé algo creativo" y nada más. Cero brief, cero contexto. ¿Tu reacción?</p>
+      <button class="opt" data-q="3">
+        <span class="badge">A</span>
+        <span>Pánico total, pido que me expliquen todo de nuevo.</span>
+      </button>
+      <button class="opt" data-q="3">
+        <span class="badge">B</span>
+        <span>Hago lo primero que se me cruza y listo.</span>
+      </button>
+      <button class="opt" data-win="1" data-q="3">
+        <span class="badge">C</span>
+        <span>Hago 2 o 3 preguntas clave, entiendo qué quieren lograr y vuelvo con ideas armadas. Si no hay brief, lo construyo.</span>
+      </button>
+      <div class="verdict" id="verdict-3"><b>Por qué importa:</b> la ambigüedad no me frena, me activa.</div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="slide" data-index="4">
+      <div class="eyebrow">Pregunta 4 de 5</div>
+      <p class="qtext">Te dicen "grabate vos explicando esto" y no tenías ni idea de que ibas a salir en cámara. ¿Qué hacés?</p>
+      <button class="opt" data-q="4">
+        <span class="badge">A</span>
+        <span>Lo hago, pero se nota que quiero que me trague la tierra.</span>
+      </button>
+      <button class="opt" data-win="1" data-q="4">
+        <span class="badge">B</span>
+        <span>Me pongo frente a cámara y lo hago lo más dinámico y orgánico posible.</span>
+      </button>
+      <button class="opt" data-q="4">
+        <span class="badge">C</span>
+        <span>Me escondo atrás de la cámara toda la vida.</span>
+      </button>
+      <div class="verdict" id="verdict-4"><b>Por qué importa:</b> en este trabajo la cara también labura.</div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="slide" data-index="5">
+      <div class="eyebrow">Pregunta 5 de 5</div>
+      <p class="qtext">Hay 100 personas más aplicando a este mismo puesto. ¿Cómo hacés para que se acuerden de vos?</p>
+      <button class="opt" data-win="1" data-q="5">
+        <span class="badge">A</span>
+        <span>Mando esto: un test armado a mano, con el tono de la marca, para mostrar que ya entendí cómo hablan antes de trabajar ahí. Y, obvio, dejo mi portfolio abajo.</span>
+      </button>
+      <button class="opt" data-q="5">
+        <span class="badge">B</span>
+        <span>Mando el CV y cruzo los dedos.</span>
+      </button>
+      <button class="opt" data-q="5">
+        <span class="badge">C</span>
+        <span>Mando el CV con un mensaje de “me encantó la propuesta”.</span>
+      </button>
+      <div class="verdict" id="verdict-5"><b>Por qué importa:</b> obvio que era esta.</div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="slide" data-index="6">
+      <div class="eyebrow">Resultado</div>
+      <div class="result-card">
+        <p class="pct">100%</p>
+        <p class="result-title">Motivo para contratarme: encontrado.</p>
+        <p class="result-body">Test superado. Encontraste a alguien con criterio para crear contenido, que resuelve, se planta frente a cámara y le mete ganas de verdad.</p>
+        <div class="contact">
+          <strong>Valentina Stützer</strong>
+          <span>Barcelona</span>
+          <span>Portfolio: [tu link]</span>
+          <span>Instagram: @valenstutzer</span>
+          <span>valentinastutzer2@gmail.com</span>
+        </div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+  </div>
+
+  <div class="btnrow">
+    <button class="cta" id="ctaBtn">Iniciar test <span id="ctaArrow">→</span></button>
+    <p class="timehint" id="timehint">Tarda menos de 1 minuto</p>
+  </div>
+
+</div>
+
+<script>
+  const total = 6;
+  let current = 0;
+  let answered = {};
+
+  const storybar = document.getElementById('storybar');
+  for(let i=0;i<total;i++){
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    seg.innerHTML = '<i></i>';
+    storybar.appendChild(seg);
+  }
+  const segs = storybar.querySelectorAll('.seg i');
+
+  const slides = document.querySelectorAll('.slide');
+  const cta = document.getElementById('ctaBtn');
+  const ctaArrow = document.getElementById('ctaArrow');
+  const stepcount = document.getElementById('stepcount');
+  const timehint = document.getElementById('timehint');
+
+  function render(){
+    slides.forEach(s=>{
+      s.classList.toggle('active', parseInt(s.dataset.index) === current);
+    });
+    segs.forEach((seg,i)=>{
+      seg.style.width = i < current ? '100%' : (i === current ? '100%' : '0%');
+    });
+    stepcount.textContent = current + '/' + total;
+
+    if(current === 0){
+      cta.textContent = '';
+      cta.innerHTML = 'Iniciar test <span>→</span>';
+      cta.disabled = false;
+      timehint.style.display = 'block';
+    } else if(current > 0 && current < total){
+      timehint.style.display = 'none';
+      const isAnswered = answered[current];
+      cta.innerHTML = current === total - 1 ? 'Ver resultado <span>→</span>' : 'Siguiente <span>→</span>';
+      cta.disabled = !isAnswered;
+    } else {
+      timehint.style.display = 'none';
+      cta.innerHTML = 'Volver a empezar';
+      cta.disabled = false;
+    }
+  }
+
+  cta.addEventListener('click', ()=>{
+    if(current < total){
+      current++;
+    } else {
+      current = 0;
+      answered = {};
+      document.querySelectorAll('.opt').forEach(o=>{o.disabled=false; o.classList.remove('selected');});
+      document.querySelectorAll('.verdict').forEach(v=>v.classList.remove('show'));
+    }
+    render();
+  });
+
+  document.querySelectorAll('.opt').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      const q = opt.dataset.q;
+      if(answered[q]) return;
+      answered[q] = true;
+      opt.classList.add('selected');
+      document.querySelectorAll('.opt[data-q="'+q+'"]').forEach(o=>o.disabled = true);
+      if(opt.dataset.win === '1'){
+        document.getElementById('verdict-'+q).classList.add('show');
+      }
+      render();
+    });
+  });
+
+  render();
+</script>
+
+</body>
+</html>
